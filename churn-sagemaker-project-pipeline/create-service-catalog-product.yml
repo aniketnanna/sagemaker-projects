@@ -2,7 +2,7 @@
 AWSTemplateFormatVersion: "2010-09-09"
 
 Description: >-
-  Template for creating a Service Catalog product for Multi-model training and batch inference pipeline
+  Template for creating a Service Catalog product for Model training and batch inference pipeline
 Parameters:
 
   PortfolioIDParameter:
@@ -11,12 +11,12 @@ Parameters:
 
   ProductNameParameter:
     Type: String
-    Default: 'Multi-model training and batch inference pipeline'
+    Default: 'Training and batch inference pipeline'
     Description: The name of this product within the portfolio.
 
   ProductDescriptionParameter:
     Type: String
-    Default: 'SAMPLE DESCRIPTION'
+    Default: 'The pipeline deploys infra for training and inference'
     Description: The description of this product within the portfolio.
 
   ProductOwnerParameter:
@@ -41,22 +41,22 @@ Parameters:
 
   ProductSupportURLParameter:
     Type: String
-    Default: 'https://github.com/aws-samples/sagemaker-custom-project-templates'
+    Default: 'https://github.com/aniketnanna/sagemaker-projects'
     Description: The support url of this product within the portfolio.
 
   SageMakerProjectRepoZipParameter:
     Type: String
-    Default: 'https://github.com/aws-samples/sagemaker-custom-project-templates/archive/refs/heads/main.zip'
+    Default: 'https://github.com/aniketnanna/sagemaker-projects/archive/refs/heads/main.zip'
     Description: 'URL for a Zip of the SageMaker Projects Examples GitHub Repo'
 
   SageMakerProjectRepoNameBranchParameter:
     Type: String
-    Default: 'sagemaker-custom-project-templates-main'
+    Default: 'sagemaker-projects-main'
     Description: 'Name/Branch of the SageMaker Projects Examples GitHub Repo'
   
   SageMakerProjectsProjectNameParameter:
     Type: String
-    Default: 'multi-model-trainining-batch-inference-pipeline'
+    Default: 'churn-sagemaker-project-pipeline'
     Description: Project folder inside of the GitHub repo for this project
 
 Metadata: 
@@ -235,7 +235,7 @@ Resources:
   AmazonSageMakerServiceCatalogProductsUseRole:
     Type: AWS::IAM::Role
     Properties:
-      RoleName: 'AmazonSageMakerServiceCatalogProductsUseRoleMultiModelTB'
+      RoleName: 'AmazonSageMakerServiceCatalogProductsUseRoleModelTrainBatch'
       Description: Role used by SageMaker Project resources
       AssumeRolePolicyDocument:
         Version: '2012-10-17'
@@ -469,8 +469,8 @@ Resources:
   CustomBackedLambda:
     Type: AWS::Lambda::Function
     Properties:
-      FunctionName: !Join ['-', ['aws-samples-SAMPLE-lambda-bootstrapper', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref 'AWS::StackId']]]]]]
-      Runtime: python3.9
+      FunctionName: !Join ['-', ['aws-sagemaker-project-lambda-bootstrapper', !Select [4, !Split ['-', !Select [2, !Split ['/', !Ref 'AWS::StackId']]]]]]
+      Runtime: python3.11
       Role: !GetAtt BootstrapLambdaExecutionRole.Arn
       Handler: index.lambda_handler
       Timeout: 300
@@ -619,8 +619,8 @@ Resources:
         AWSDEFAULT___CODE_STAGING_BUCKET___ : !Ref BootstrapS3Bucket
         AWSDEFAULT___PROJECT_NAME___ : !Ref SageMakerProjectsProjectNameParameter
       Archives:
-        - ['multi-model-trainining-batch-inference-pipeline-build.zip','/seedcode/ml-build-train']
-        - ['multi-model-trainining-batch-inference-pipeline-deploy.zip','/seedcode/ml-batch-inference']
+        - ['churn-sagemaker-project-pipeline-build.zip','/seedcode/ml-build-train']
+        - ['churn-sagemaker-project-pipeline-deploy.zip','/seedcode/ml-batch-inference']
 
 
 Outputs:

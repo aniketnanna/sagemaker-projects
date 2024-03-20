@@ -22,15 +22,10 @@ Resources:
     Properties:
       BucketName: !Sub 'sagemaker-project-${SageMakerProjectId}'
 
-  ModelPackageGroupModel1:
+  ModelPackageGroupModel:
     Type: 'AWS::SageMaker::ModelPackageGroup'
     Properties:
-      ModelPackageGroupName: !Sub '${SageMakerProjectName}-${SageMakerProjectId}-1'
-  
-  ModelPackageGroupModel2:
-    Type: 'AWS::SageMaker::ModelPackageGroup'
-    Properties:
-      ModelPackageGroupName: !Sub '${SageMakerProjectName}-${SageMakerProjectId}-2'
+      ModelPackageGroupName: !Sub '${SageMakerProjectName}-${SageMakerProjectId}'
   
   ModelBuildCodeCommitEventRule:
     Type: 'AWS::Events::Rule'
@@ -182,13 +177,13 @@ Resources:
                 ProjectName: !Ref SageMakerModelPipelineBuildProject
               RunOrder: 1
 
-  ModelDeploySageMakerEventRule1:
+  ModelDeploySageMakerEventRule:
     Type: 'AWS::Events::Rule'
     Properties:
-      Name: !Sub 'sagemaker-${SageMakerProjectName}-${SageMakerProjectId}-model-1'
+      Name: !Sub 'sagemaker-${SageMakerProjectName}-${SageMakerProjectId}-model'
       Description: >-
         Rule to trigger a deployment when SageMaker Model registry is updated
-        with a new model package for model 1. For example, a new model package is registered
+        with a new model package for model. For example, a new model package is registered
         with Registry
       EventPattern:
         source:
@@ -197,7 +192,7 @@ Resources:
           - SageMaker Model Package State Change
         detail:
           ModelPackageGroupName:
-            - !Sub '${SageMakerProjectName}-${SageMakerProjectId}-1'
+            - !Sub '${SageMakerProjectName}-${SageMakerProjectId}'
           ModelApprovalStatus:
             - anything-but:
                 - PendingManualApproval
@@ -220,43 +215,6 @@ Resources:
               - role/AmazonSageMakerServiceCatalogProductsUseRoleMultiModelTB
           Id: !Sub 'sagemaker-${SageMakerProjectName}-trigger'
 
-  ModelDeploySageMakerEventRule2:
-    Type: 'AWS::Events::Rule'
-    Properties:
-      Name: !Sub 'sagemaker-${SageMakerProjectName}-${SageMakerProjectId}-model-2'
-      Description: >-
-        Rule to trigger a deployment when SageMaker Model registry is updated
-        with a new model package for model 2. For example, a new model package is registered
-        with Registry
-      EventPattern:
-        source:
-          - aws.sagemaker
-        detail-type:
-          - SageMaker Model Package State Change
-        detail:
-          ModelPackageGroupName:
-            - !Sub '${SageMakerProjectName}-${SageMakerProjectId}-2'
-          ModelApprovalStatus:
-            - anything-but:
-                - PendingManualApproval
-      State: ENABLED
-      Targets:
-        - Arn: !Join
-            - ':'
-            - - arn
-              - !Ref 'AWS::Partition'
-              - codepipeline
-              - !Ref 'AWS::Region'
-              - !Ref 'AWS::AccountId'
-              - !Ref ModelDeployPipeline
-          RoleArn: !Join
-            - ':'
-            - - arn
-              - !Ref 'AWS::Partition'
-              - 'iam:'
-              - !Ref 'AWS::AccountId'
-              - role/AmazonSageMakerServiceCatalogProductsUseRoleMultiModelTB
-          Id: !Sub 'sagemaker-${SageMakerProjectName}-trigger'
 
   ModelDeployCodeCommitEventRule:
     Type: 'AWS::Events::Rule'
@@ -345,8 +303,7 @@ Resources:
           - Name: SOURCE_MODEL_PACKAGE_GROUP_NAMES
             Value: !Join
               - ','
-              - - !Sub '${SageMakerProjectName}-${SageMakerProjectId}-1'
-                - !Sub '${SageMakerProjectName}-${SageMakerProjectId}-2'
+              - - !Sub '${SageMakerProjectName}-${SageMakerProjectId}'
           - Name: SAGEMAKER_PROJECT_ARN
             Value: !Join
               - ':'

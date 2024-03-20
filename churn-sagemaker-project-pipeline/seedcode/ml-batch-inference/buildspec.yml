@@ -1,4 +1,4 @@
-version: 0.1
+version: 0.2
 
 phases:
   install:
@@ -20,7 +20,7 @@ phases:
             --sagemaker-project-id $SAGEMAKER_PROJECT_ID \
             --sagemaker-project-name $SAGEMAKER_PROJECT_NAME \
             --inference-framework-version "1.12" \
-            --inference-python-version "py38" \
+            --inference-python-version "py311" \
             --export-staging-config $EXPORT_TEMPLATE_STAGING_CONFIG \
             --export-prod-config $EXPORT_TEMPLATE_PROD_CONFIG \
             --sagemaker-project-arn $SAGEMAKER_PROJECT_ARN
